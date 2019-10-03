@@ -34,8 +34,10 @@ func (l *Listener) Addr() net.Addr {
 // New starts a Listener on one of the addresses.
 // Caller should close the listener finally.
 //
-// If nil or an empty slice is given, it will allocate a free port at "127.0.0.1".
+// If nil or an empty slice is given, it defaults to "127.0.0.1:0".
 // If multiple address are given, it will try the addresses in order.
+//
+// If the port in the address is 0, it will allocate a free port.
 func New(addressCandidates []string) (*Listener, error) {
 	if len(addressCandidates) == 0 {
 		return NewOn("")
@@ -53,8 +55,11 @@ func New(addressCandidates []string) (*Listener, error) {
 }
 
 // NewOn starts a Listener on the address.
-// If an empty string is given, it defaults to "127.0.0.1:0".
 // Caller should close the listener finally.
+//
+// If an empty string is given, it defaults to "127.0.0.1:0".
+//
+// If the port in the address is 0, it will allocate a free port.
 func NewOn(address string) (*Listener, error) {
 	if address == "" {
 		address = "127.0.0.1:0"
