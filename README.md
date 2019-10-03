@@ -22,13 +22,13 @@ import (
 )
 
 func main() {
-    l, err := listener.New(nil)
-    if err != nil {
-        panic(err)
-    }
-    defer l.Close()
-    
-    fmt.Printf("Open %s", l.URL)
+	l, err := listener.New(nil)
+	if err != nil {
+		panic(err)
+	}
+	defer l.Close()
+
+	fmt.Printf("Open %s", l.URL)
 }
 ```
 
@@ -47,12 +47,12 @@ import (
 
 func main() {
 	l, err := listener.New([]string{"127.0.0.1:18000", "127.0.0.1:28000"})
-    if err != nil {
-        panic(err)
-    }
-    defer l.Close()
-    
-    fmt.Printf("Open %s", l.URL)
+	if err != nil {
+		panic(err)
+	}
+	defer l.Close()
+
+	fmt.Printf("Open %s", l.URL)
 }
 ```
 
