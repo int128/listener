@@ -1,4 +1,4 @@
-# listener
+# listener [![GoDoc](https://godoc.org/github.com/int128/listener?status.svg)](https://godoc.org/github.com/int128/listener)
 
 This is a Go package to allocate a net.Listener from address candidates.
 
@@ -13,13 +13,23 @@ go get github.com/int128/listener
 To allocate a `net.Listener` at a free port on localhost:
 
 ```go
-l, err := New(nil)
-if err != nil {
-    panic(err)
-}
-defer l.Close()
+package main
 
-fmt.Printf("Open %s", l.URL)
+import (
+	"fmt"
+
+	"github.com/int128/listener"
+)
+
+func main() {
+    l, err := listener.New(nil)
+    if err != nil {
+        panic(err)
+    }
+    defer l.Close()
+    
+    fmt.Printf("Open %s", l.URL)
+}
 ```
 
 ### Allocate a port from candidates
@@ -27,16 +37,26 @@ fmt.Printf("Open %s", l.URL)
 To allocate a `net.Listener` at a port 18000 or 28000 on localhost:
 
 ```go
-l, err := New([]string{"127.0.0.1:18000", "127.0.0.1:28000"})
-if err != nil {
-    panic(err)
-}
-defer l.Close()
+package main
 
-fmt.Printf("Open %s", l.URL)
+import (
+	"fmt"
+
+	"github.com/int128/listener"
+)
+
+func main() {
+	l, err := listener.New([]string{"127.0.0.1:18000", "127.0.0.1:28000"})
+    if err != nil {
+        panic(err)
+    }
+    defer l.Close()
+    
+    fmt.Printf("Open %s", l.URL)
+}
 ```
 
-If port 18000 is already in use, this will allocate port 28000.
+If port 18000 is already in use, it will allocate port 28000.
 
 
 ## Contributions
