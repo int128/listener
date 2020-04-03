@@ -29,6 +29,31 @@ func (l *Listener) Addr() net.Addr {
 	return l.l.Addr()
 }
 
+// NoAvailablePortError provides a set of errors on the port allocation.
+type NoAvailablePortError interface {
+	error
+
+	// Return the array of errors.
+	// You can unwrap the error to check the root cause.
+	Causes() []error
+}
+
+type noAvailablePortError struct {
+	causes []error
+}
+
+func (e *noAvailablePortError) Causes() []error {
+	return e.causes
+}
+
+func (e *noAvailablePortError) Error() string {
+	var s []string
+	for _, cause := range e.causes {
+		s = append(s, cause.Error())
+	}
+	return fmt.Sprintf("no available port: %s", strings.Join(s, ", "))
+}
+
 // New starts a Listener on one of the addresses.
 // Caller should close the listener finally.
 //
@@ -36,20 +61,22 @@ func (l *Listener) Addr() net.Addr {
 // If multiple address are given, it will try the addresses in order.
 //
 // If the port in the address is 0, it will allocate a free port.
+//
+// If no port is available, it will return an NoAvailablePortError.
 func New(addressCandidates []string) (*Listener, error) {
 	if len(addressCandidates) == 0 {
 		return NewOn("")
 	}
-	var errs []string
+	var errs []error
 	for _, address := range addressCandidates {
 		l, err := NewOn(address)
 		if err != nil {
-			errs = append(errs, err.Error())
+			errs = append(errs, err)
 			continue
 		}
 		return l, nil
 	}
-	return nil, fmt.Errorf("no available port (%s)", strings.Join(errs, ", "))
+	return nil, &noAvailablePortError{causes: errs}
 }
 
 // NewOn starts a Listener on the address.
