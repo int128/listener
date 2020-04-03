@@ -6,8 +6,6 @@ import (
 	"net"
 	"net/url"
 	"strings"
-
-	"golang.org/x/xerrors"
 )
 
 // Listener wraps a net.Listener and provides its URL.
@@ -51,7 +49,7 @@ func New(addressCandidates []string) (*Listener, error) {
 		}
 		return l, nil
 	}
-	return nil, xerrors.Errorf("no available port (%s)", strings.Join(errs, ", "))
+	return nil, fmt.Errorf("no available port (%s)", strings.Join(errs, ", "))
 }
 
 // NewOn starts a Listener on the address.
@@ -66,11 +64,11 @@ func NewOn(address string) (*Listener, error) {
 	}
 	l, err := net.Listen("tcp", address)
 	if err != nil {
-		return nil, xerrors.Errorf("could not listen: %w", err)
+		return nil, fmt.Errorf("could not listen: %w", err)
 	}
 	addr, ok := l.Addr().(*net.TCPAddr)
 	if !ok {
-		return nil, xerrors.Errorf("internal error: got a unknown type of listener %T", l.Addr())
+		return nil, fmt.Errorf("internal error: got a unknown type of listener %T", l.Addr())
 	}
 	return &Listener{
 		l:   l,
