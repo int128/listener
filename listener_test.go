@@ -1,6 +1,8 @@
 package listener
 
 import (
+	"errors"
+	"net"
 	"testing"
 )
 
@@ -142,5 +144,30 @@ func TestNew(t *testing.T) {
 			t.Fatalf("New wants error but was nil")
 		}
 		t.Logf("expected error: %s", err)
+		noAvailablePortErr, ok := err.(NoAvailablePortError)
+		if !ok {
+			t.Fatalf("error wants NoAvailablePortError")
+		}
+
+		causes := noAvailablePortErr.Causes()
+		if len(causes) != 2 {
+			t.Fatalf("len(causes) wants 3 but was %d", len(causes))
+		}
+		cause1 := causes[0]
+		var ne1 *net.OpError
+		if !errors.As(cause1, &ne1) {
+			t.Fatalf("cause1 wants net.OpError but was %T", errors.Unwrap(cause1))
+		}
+		if ne1.Addr.String() != "127.0.0.1:9000" {
+			t.Errorf("Addr wants 127.0.0.1:9000 but was %s", ne1.Addr)
+		}
+		cause2 := causes[1]
+		var ne2 *net.OpError
+		if !errors.As(cause2, &ne2) {
+			t.Fatalf("cause1 wants net.OpError but was %T", errors.Unwrap(cause2))
+		}
+		if ne2.Addr.String() != "127.0.0.1:9001" {
+			t.Errorf("Addr wants 127.0.0.1:9001 but was %s", ne1.Addr)
+		}
 	})
 }
