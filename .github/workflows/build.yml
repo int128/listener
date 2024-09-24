@@ -1,20 +1,28 @@
 name: build
-on: [push, pull_request]
+
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - v*
+  pull_request:
+
 jobs:
-  build:
-    name: Build
+  check:
+    uses: int128/go-workflows/.github/workflows/check.yaml@v0.4.0
+    with:
+        go-version-file: go.mod
+        cache-dependency-path: go.sum
+        golangci-lint-version: v1.28.3
+
+  test:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
-      - name: Set up Go
-        uses: actions/setup-go@v1
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
         with:
-          go-version: 1.13
-        id: go
-      - name: Check out code
-        uses: actions/checkout@v1
-      - name: Set up golangci-lint
-        run: curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s v1.19.1
-      - name: Lint
-        run: ./bin/golangci-lint run
-      - name: Test
-        run: go test -v ./...
+          go-version-file: go.mod
+          cache-dependency-path: go.sum
+      - run: go test -v ./...
