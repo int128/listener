@@ -144,12 +144,12 @@ func TestNew(t *testing.T) {
 			t.Fatalf("New wants error but was nil")
 		}
 		t.Logf("expected error: %s", err)
-		noAvailablePortErr, ok := err.(NoAvailablePortError)
-		if !ok {
-			t.Fatalf("error wants NoAvailablePortError")
-		}
 
-		causes := noAvailablePortErr.Causes()
+		var noAvailablePortErr NoAvailablePortError
+		if !errors.As(err, &noAvailablePortErr) {
+			t.Fatalf("error wants NoAvailablePortError but was %T", err)
+		}
+		causes := noAvailablePortErr.Unwrap()
 		if len(causes) != 2 {
 			t.Fatalf("len(causes) wants 3 but was %d", len(causes))
 		}
