@@ -29,6 +29,7 @@ func (l *Listener) Addr() net.Addr {
 	return l.l.Addr()
 }
 
+// NoAvailablePortError contains the causes of port allocation failure.
 type NoAvailablePortError interface {
 	Unwrap() []error
 }

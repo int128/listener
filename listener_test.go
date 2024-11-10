@@ -147,7 +147,7 @@ func TestNew(t *testing.T) {
 
 		var noAvailablePortErr NoAvailablePortError
 		if !errors.As(err, &noAvailablePortErr) {
-			t.Fatalf("error wants unwrapper but was %T", err)
+			t.Fatalf("error wants NoAvailablePortError but was %T", err)
 		}
 		causes := noAvailablePortErr.Unwrap()
 		if len(causes) != 2 {
