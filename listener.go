@@ -41,7 +41,7 @@ type NoAvailablePortError interface {
 //
 // If the port in the address is 0, it will allocate a free port.
 //
-// If no port is available, it will return NoAvailablePortError.
+// If no port is available, it will return an error which wraps NoAvailablePortError.
 func New(addressCandidates []string) (*Listener, error) {
 	if len(addressCandidates) == 0 {
 		return NewOn("")
@@ -55,7 +55,7 @@ func New(addressCandidates []string) (*Listener, error) {
 		}
 		return l, nil
 	}
-	return nil, errors.Join(errs...)
+	return nil, fmt.Errorf("no available port: %w", errors.Join(errs...))
 }
 
 // NewOn starts a Listener on the address.
