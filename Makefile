@@ -4,5 +4,4 @@ test:
 
 .PHONY: lint
 lint:
-	$(MAKE) -C tools
-	./tools/bin/golangci-lint run
+	go tool github.com/golangci/golangci-lint/cmd/golangci-lint run
