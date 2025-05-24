@@ -1,6 +1,6 @@
 module github.com/int128/oauth2cli/tools
 
-go 1.24.0
+go 1.24.3
 
 require (
 	4d63.com/gocheckcompilerdirectives v1.3.0 // indirect
