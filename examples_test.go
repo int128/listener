@@ -12,7 +12,11 @@ func ExampleNew() {
 	if err != nil {
 		panic(err)
 	}
-	defer l.Close()
+	defer func() {
+		if err := l.Close(); err != nil {
+			panic(err)
+		}
+	}()
 
 	fmt.Printf("Open %s", l.URL)
 
