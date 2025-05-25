@@ -12,7 +12,11 @@ func TestNew(t *testing.T) {
 		if err != nil {
 			t.Fatalf("New error: %s", err)
 		}
-		defer l.Close()
+		defer func() {
+			if err := l.Close(); err != nil {
+				t.Errorf("Close error: %s", err)
+			}
+		}()
 		if l.URL == nil {
 			t.Errorf("URL wants a URL but was nil")
 		}
@@ -30,7 +34,11 @@ func TestNew(t *testing.T) {
 		if err != nil {
 			t.Fatalf("New error: %s", err)
 		}
-		defer l.Close()
+		defer func() {
+			if err := l.Close(); err != nil {
+				t.Errorf("Close error: %s", err)
+			}
+		}()
 		if l.URL == nil {
 			t.Errorf("URL wants a URL but was nil")
 		}
@@ -48,7 +56,11 @@ func TestNew(t *testing.T) {
 		if err != nil {
 			t.Fatalf("New error: %s", err)
 		}
-		defer l.Close()
+		defer func() {
+			if err := l.Close(); err != nil {
+				t.Errorf("Close error: %s", err)
+			}
+		}()
 		if l.URL == nil {
 			t.Errorf("URL wants a URL but was nil")
 		}
@@ -68,7 +80,11 @@ func TestNew(t *testing.T) {
 		if err != nil {
 			t.Fatalf("New error: %s", err)
 		}
-		defer l1.Close()
+		defer func() {
+			if err := l1.Close(); err != nil {
+				t.Errorf("Close error: %s", err)
+			}
+		}()
 		if l1.URL == nil {
 			t.Errorf("URL wants a URL but was nil")
 		}
@@ -86,7 +102,11 @@ func TestNew(t *testing.T) {
 		if err != nil {
 			t.Fatalf("New error: %s", err)
 		}
-		defer l2.Close()
+		defer func() {
+			if err := l2.Close(); err != nil {
+				t.Errorf("Close error: %s", err)
+			}
+		}()
 		if l2.URL == nil {
 			t.Errorf("URL wants a URL but was nil")
 		}
@@ -106,7 +126,11 @@ func TestNew(t *testing.T) {
 		if err != nil {
 			t.Fatalf("New error: %s", err)
 		}
-		defer l1.Close()
+		defer func() {
+			if err := l1.Close(); err != nil {
+				t.Errorf("Close error: %s", err)
+			}
+		}()
 		if l1.URL == nil {
 			t.Errorf("URL wants a URL but was nil")
 		}
@@ -124,7 +148,11 @@ func TestNew(t *testing.T) {
 		if err != nil {
 			t.Fatalf("New error: %s", err)
 		}
-		defer l2.Close()
+		defer func() {
+			if err := l2.Close(); err != nil {
+				t.Errorf("Close error: %s", err)
+			}
+		}()
 		if l2.URL == nil {
 			t.Errorf("URL wants a URL but was nil")
 		}
@@ -140,7 +168,9 @@ func TestNew(t *testing.T) {
 
 		l3, err := New([]string{"localhost:9000", "localhost:9001"})
 		if err == nil {
-			l3.Close()
+			if err := l3.Close(); err != nil {
+				t.Errorf("Close error: %s", err)
+			}
 			t.Fatalf("New wants error but was nil")
 		}
 		t.Logf("expected error: %s", err)
