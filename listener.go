@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net"
 	"net/url"
+	"strings"
 )
 
 // Listener wraps a net.Listener and provides its URL.
@@ -69,6 +70,14 @@ func NewOn(address string) (*Listener, error) {
 	if address == "" {
 		address = "127.0.0.1:0"
 	}
+	if strings.HasPrefix(address, "unix") {
+		return newOnUnix(address)
+	} else {
+		return newOnTCP(address)
+	}
+}
+
+func newOnTCP(address string) (*Listener, error) {
 	l, err := net.Listen("tcp", address)
 	if err != nil {
 		return nil, fmt.Errorf("could not listen: %w", err)
@@ -80,5 +89,21 @@ func NewOn(address string) (*Listener, error) {
 	return &Listener{
 		l:   l,
 		URL: &url.URL{Host: fmt.Sprintf("localhost:%d", addr.Port), Scheme: "http"},
+	}, nil
+}
+
+func newOnUnix(address string) (*Listener, error) {
+	address, _ = strings.CutPrefix(address, "unix://")
+	l, err := net.Listen("unix", address)
+	if err != nil {
+		return nil, fmt.Errorf("could not listen: %w", err)
+	}
+	addr, ok := l.Addr().(*net.UnixAddr)
+	if !ok {
+		return nil, fmt.Errorf("internal error: got a unknown type of listener %T", l.Addr())
+	}
+	return &Listener{
+		l:   l,
+		URL: &url.URL{Path: addr.String(), Scheme: "unix"},
 	}, nil
 }
